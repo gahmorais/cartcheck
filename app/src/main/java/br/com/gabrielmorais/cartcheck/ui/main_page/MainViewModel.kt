@@ -1,4 +1,4 @@
-package br.com.gabrielmorais.cartcheck.ui.main
+package br.com.gabrielmorais.cartcheck.ui.main_page
 
 import androidx.lifecycle.ViewModel
 import br.com.gabrielmorais.cartcheck.data.AppDatabase
