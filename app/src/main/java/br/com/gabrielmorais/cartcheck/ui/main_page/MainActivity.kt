@@ -59,9 +59,11 @@ class MainActivity : ComponentActivity() {
             Button(
               modifier = Modifier.fillMaxWidth(),
               onClick = {
-
               }) {
-              Text(text = "Histórico de compras", style = TextStyle(fontSize = 24.sp))
+              Text(
+                text = "Histórico de compras",
+                style = TextStyle(fontSize = 24.sp)
+              )
             }
           }
         }

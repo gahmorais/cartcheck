@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">CartCheck</string>
+    <string name="text_confirm">Confirmar</string>
+    <string name="text_cancel">Cancelar</string>
+    <string name="text_price">Preço</string>
+    <string name="text_quantity">Quantidade</string>
+    <string name="text_product_description">Descrição do produto</string>
+    <string name="text_add_item">Adicionar Item</string>
 </resources>

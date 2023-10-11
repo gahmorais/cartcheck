@@ -15,6 +15,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
@@ -22,6 +23,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import br.com.gabrielmorais.cartcheck.R
 
 class AddItemDialogState() {
   var price by mutableStateOf(0.0)
@@ -59,26 +61,34 @@ fun AddItemDialog(
     ) {
       Text(
         modifier = Modifier.fillMaxWidth(),
-        text = "Adicionar Item",
+        text = stringResource(R.string.text_add_item),
         textAlign = TextAlign.Center,
         style = TextStyle(fontSize = 20.sp)
       )
       TextField(
-        label = { Text(text = "Descrição do produto") },
+        label = { Text(text = stringResource(R.string.text_product_description)) },
         value = uiState.description,
         onValueChange = uiState.onDescriptionChange
       )
       TextField(
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
-        label = { Text(text = "Quantidade") },
+        label = { Text(text = stringResource(R.string.text_quantity)) },
         value = uiState.quantity.toString(), onValueChange = {
-          uiState.onQuantityChange(it.toInt())
+          try {
+            uiState.onQuantityChange(it.toInt())
+          } catch (e: Exception) {
+            uiState.onQuantityChange(0)
+          }
         })
       TextField(
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
-        label = { Text(text = "Preço") },
+        label = { Text(text = stringResource(R.string.text_price)) },
         value = uiState.price.toString(), onValueChange = {
-          uiState.onPriceChange(it.toDouble())
+          try {
+            uiState.onPriceChange(it.toDouble())
+          } catch (e: Exception) {
+            uiState.onPriceChange(0.0)
+          }
         }
       )
       Row {
@@ -87,12 +97,12 @@ fun AddItemDialog(
           onClick = {
             onConfirm(uiState)
           }) {
-          Text(text = "Confirmar")
+          Text(text = stringResource(R.string.text_confirm))
         }
         TextButton(
           modifier = Modifier.fillMaxWidth(),
           onClick = { onDismiss() }) {
-          Text(text = "Cancelar")
+          Text(text = stringResource(R.string.text_cancel))
         }
       }
     }

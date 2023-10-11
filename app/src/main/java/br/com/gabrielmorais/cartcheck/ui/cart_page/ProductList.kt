@@ -25,12 +25,14 @@ import br.com.gabrielmorais.cartcheck.data.models.Product
 import br.com.gabrielmorais.cartcheck.utils.mockProductList
 import br.com.gabrielmorais.cartcheck.utils.sum
 import br.com.gabrielmorais.cartcheck.utils.toBrazilianCurrency
+import java.util.UUID
 
 @Composable
 fun ProductList(
   modifier: Modifier = Modifier,
   products: List<Product>
 ) {
+
   LazyColumn {
     item {
       Row(
@@ -50,26 +52,30 @@ fun ProductList(
       Spacer(modifier = Modifier.padding(10.dp))
     }
 
-    itemsIndexed(products) { index, product ->
-      Card(
-        Modifier.fillMaxWidth(),
-        shape = RectangleShape,
-      ) {
-        Row(
-          Modifier
-            .fillMaxWidth()
-            .background(if (index % 2 == 0) Color.Gray else Color.White),
-          horizontalArrangement = Arrangement.SpaceAround,
+    itemsIndexed(
+      items = products,
+      key = { i, p -> UUID.randomUUID().toString() },
+      itemContent = { index, product ->
+        Card(
+          Modifier.fillMaxWidth(),
+          shape = RectangleShape,
         ) {
-          Text(text = product.description, fontSize = 25.sp)
-          Text(
-            text = product.price.toBrazilianCurrency(),
-            fontSize = 25.sp,
-            textAlign = TextAlign.End
-          )
+          Row(
+            Modifier
+              .fillMaxWidth()
+              .background(if (index % 2 == 0) Color.Gray else Color.White),
+            horizontalArrangement = Arrangement.SpaceAround,
+          ) {
+            Text(text = product.description, fontSize = 25.sp)
+            Text(
+              text = product.price.toBrazilianCurrency(),
+              fontSize = 25.sp,
+              textAlign = TextAlign.End
+            )
+          }
         }
-      }
-    }
+
+      })
   }
 }
 
