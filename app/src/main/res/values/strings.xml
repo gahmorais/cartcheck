@@ -6,4 +6,9 @@
     <string name="text_quantity">Quantidade</string>
     <string name="text_product_description">Descrição do produto</string>
     <string name="text_add_item">Adicionar Item</string>
+    <string name="text_new_sale">Nova compra</string>
+    <string name="text_change_balance">Alterar saldo</string>
+    <string name="text_update">Atualizar</string>
+    <string name="text_balance">Saldo</string>
+    <string name="text_history">Histórico</string>
 </resources>

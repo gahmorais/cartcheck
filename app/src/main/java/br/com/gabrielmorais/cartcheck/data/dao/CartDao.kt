@@ -1,7 +1,6 @@
 package br.com.gabrielmorais.cartcheck.data.dao
 
 import androidx.room.Dao
-import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import br.com.gabrielmorais.cartcheck.data.models.Cart
@@ -11,9 +10,12 @@ interface CartDao {
   @Insert
   fun insert(cart: Cart)
 
+  @Query("SELECT * FROM carts")
+  fun getAll(): List<Cart>
+
   @Query("SELECT * FROM carts WHERE id = :id ")
   fun getById(id: Int): Cart
 
-  @Delete
+  @Query("DELETE FROM carts WHERE id = :id")
   fun delete(id: Int)
 }

@@ -2,8 +2,17 @@ package br.com.gabrielmorais.cartcheck.di
 
 import androidx.room.Room
 import br.com.gabrielmorais.cartcheck.data.AppDatabase
+import br.com.gabrielmorais.cartcheck.data.repositories.CartRepository
 import org.koin.dsl.module
 
 val mainModule = module {
-  factory { Room.databaseBuilder(get(), AppDatabase::class.java, "cartcheck") }
+  single { CartRepository(get<AppDatabase>().cartDao()) }
+  single {
+    Room.databaseBuilder(
+      get(),
+      AppDatabase::class.java,
+      "cartcheck"
+    ).build()
+  }
+
 }

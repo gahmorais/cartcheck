@@ -8,7 +8,7 @@ import java.util.Locale
 fun Double.toBrazilianCurrency(): String {
   val format = NumberFormat.getCurrencyInstance()
   format.currency = Currency.getInstance(Locale("pt", "BR"))
-  return format.format(this)
+  return format.format(this).replace(".", ",")
 }
 
 fun List<Product>.sum() = fold(0.0) { acc, product -> acc + product.price }
