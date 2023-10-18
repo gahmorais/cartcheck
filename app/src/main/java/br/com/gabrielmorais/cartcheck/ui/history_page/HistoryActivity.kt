@@ -70,7 +70,9 @@ class HistoryActivity : ComponentActivity() {
           }
         ) { paddingValues ->
           if (showDetails) {
-            LazyColumn(Modifier.padding(paddingValues)) {
+            LazyColumn(
+              modifier = Modifier.padding(paddingValues)
+            ) {
               item {
                 Row(
                   modifier = Modifier.clickable(onClick = {
@@ -90,16 +92,29 @@ class HistoryActivity : ComponentActivity() {
 
               items(carts[selectCart].products) { product ->
                 Row(
-                  modifier = Modifier.padding(horizontal = 16.dp),
-                  horizontalArrangement = Arrangement.spacedBy(10.dp)
+                  modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
+                  horizontalArrangement = Arrangement.SpaceBetween,
                 ) {
-                  Text(text = product.description)
-                  Text(text = product.quantity.toString())
-                  Text(text = product.price.toBrazilianCurrency())
+                  Text(
+                    modifier = Modifier.fillMaxWidth(0.43F),
+                    text = product.description,
+                    style = TextStyle(fontSize = 25.sp)
+                  )
+                  Text(
+                    modifier = Modifier.fillMaxWidth(0.05F),
+                    text = product.quantity.toString(),
+                    style = TextStyle(fontSize = 25.sp)
+                  )
+                  Text(
+                    modifier = Modifier.fillMaxWidth(0.45F),
+                    text = product.price.toBrazilianCurrency(),
+                    style = TextStyle(fontSize = 25.sp)
+                  )
                 }
+                Spacer(modifier = Modifier.padding(5.dp))
               }
-
-
             }
           } else {
             LazyColumn(Modifier.padding(paddingValues)) {

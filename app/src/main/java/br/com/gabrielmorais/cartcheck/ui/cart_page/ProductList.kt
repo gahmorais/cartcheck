@@ -111,8 +111,7 @@ fun ProductList(
           }) {
           ListRow(
             index = index,
-            description = product.description,
-            value = product.price.toBrazilianCurrency()
+            product = product
           )
         }
 
@@ -131,8 +130,7 @@ fun ProductList(
 @Composable
 fun ListRow(
   index: Int,
-  description: String,
-  value: String
+  product: Product
 ) {
   Card(
     Modifier
@@ -147,11 +145,16 @@ fun ListRow(
       horizontalArrangement = Arrangement.SpaceAround,
     ) {
       Text(
-        text = description,
+        text = product.description,
         fontSize = 25.sp
       )
       Text(
-        text = value,
+        text = product.quantity.toString(),
+        fontSize = 25.sp,
+        textAlign = TextAlign.End
+      )
+      Text(
+        text = product.price.toBrazilianCurrency(),
         fontSize = 25.sp,
         textAlign = TextAlign.End
       )

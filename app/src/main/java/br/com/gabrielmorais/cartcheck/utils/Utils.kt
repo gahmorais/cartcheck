@@ -11,4 +11,4 @@ fun Double.toBrazilianCurrency(): String {
   return format.format(this).replace(".", ",")
 }
 
-fun List<Product>.sum() = fold(0.0) { acc, product -> acc + product.price }
+fun List<Product>.sum() = fold(0.0) { acc, product -> acc + (product.price * product.quantity) }
