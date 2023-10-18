@@ -95,7 +95,7 @@ fun AddItemDialog(
           try {
             uiState.onQuantityChange(it.toInt())
           } catch (e: Exception) {
-            uiState.onQuantityChange(0)
+
           }
         })
       TextField(
@@ -115,7 +115,7 @@ fun AddItemDialog(
           onClick = {
             onConfirm(uiState)
           }) {
-          Text(text = stringResource(R.string.text_confirm))
+          Text(text = stringResource(R.string.text_add_item))
         }
         TextButton(
           modifier = Modifier.fillMaxWidth(),
