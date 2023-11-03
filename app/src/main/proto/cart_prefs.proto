@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+option java_package = "br.com.gabrielmorais.cartcheck";
+option java_multiple_files = true;
+
+message CartPreferences {
+  message Product {
+    string description = 1;
+    double price = 2;
+    int32 quantity = 3;
+  }
+  string id = 1;
+  sint64 date = 2;
+  double totalPrice = 3;
+  double balance = 4;
+  repeated Product products = 8;
+}

@@ -2,16 +2,17 @@ plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
     id 'kotlin-kapt'
+    id "com.google.protobuf" version "0.8.17"
 }
 
 android {
     namespace 'br.com.gabrielmorais.cartcheck'
-    compileSdk 33
+    compileSdk 34
 
     defaultConfig {
         applicationId "br.com.gabrielmorais.cartcheck"
         minSdk 28
-        targetSdk 33
+        targetSdk 34
         versionCode 1
         versionName "1.0"
 
@@ -46,6 +47,32 @@ android {
         }
     }
 
+    sourceSets {
+        main {
+            kotlin {
+                srcDirs += 'build/generated/source/proto/main/kotlin'
+            }
+            proto {
+                srcDir 'src/main/proto' // default value
+            }
+        }
+    }
+
+    protobuf {
+        protoc {
+            artifact = "com.google.protobuf:protoc:3.19.4"
+        }
+
+        generateProtoTasks {
+            all().each { task ->
+                task.builtins {
+                    java {
+                        option 'lite'
+                    }
+                }
+            }
+        }
+    }
 }
 
 dependencies {
@@ -66,14 +93,20 @@ dependencies {
     def gson_version = "2.10.1"
     implementation "com.google.code.gson:gson:$gson_version"
 
-    def roomVersion = "2.4.1"
+    def roomVersion = "2.6.0"
     implementation("androidx.room:room-runtime:$roomVersion")
     annotationProcessor("androidx.room:room-compiler:$roomVersion")
-
-    // To use Kotlin annotation processing tool (kapt)
+    implementation("androidx.room:room-ktx:$roomVersion")
     kapt("androidx.room:room-compiler:$roomVersion")
     def koin_version = "3.4.3"
     implementation "io.insert-koin:koin-android:$koin_version"
+
+
+    def datastore_version = "1.0.0"
+    def protobuf_version = "3.19.4"
+    implementation("androidx.datastore:datastore:$datastore_version")
+    implementation "com.google.protobuf:protobuf-javalite:$protobuf_version"
+
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
@@ -83,3 +116,4 @@ dependencies {
     debugImplementation 'androidx.compose.ui:ui-tooling'
     debugImplementation 'androidx.compose.ui:ui-test-manifest'
 }
+

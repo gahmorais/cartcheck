@@ -13,14 +13,21 @@ class CartRepository(private val cartDao: CartDao) {
     throw e
   }
 
-  suspend fun getAll(): List<Cart> = try {
-    cartDao.getAll()
+  suspend fun getById(id: String) = try {
+    cartDao.getById(id)
   } catch (e: Exception) {
     throw e
   }
 
-  fun delete(id: Int) = try {
-    cartDao.delete(id)
+
+  fun getAll(): List<Cart> = try {
+    cartDao.getAllCarts()
+  } catch (e: Exception) {
+    throw e
+  }
+
+  fun delete(cart: Cart) = try {
+    cartDao.delete(cart)
   } catch (e: Exception) {
     throw e
   }

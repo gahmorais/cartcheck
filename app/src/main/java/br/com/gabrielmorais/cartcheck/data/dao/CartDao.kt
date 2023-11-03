@@ -1,21 +1,26 @@
 package br.com.gabrielmorais.cartcheck.data.dao
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import br.com.gabrielmorais.cartcheck.data.models.Cart
 
 @Dao
 interface CartDao {
-  @Insert
-  fun insert(cart: Cart)
+  @Insert(onConflict = OnConflictStrategy.REPLACE)
+  suspend fun insert(cart: Cart)
 
   @Query("SELECT * FROM carts")
-  fun getAll(): List<Cart>
+  fun getAllCarts(): List<Cart>
 
-  @Query("SELECT * FROM carts WHERE id = :id ")
-  fun getById(id: Int): Cart
+  @Query("SELECT finalizado FROM carts WHERE id = :id")
+  fun isFinished(id: String): Boolean
 
-  @Query("DELETE FROM carts WHERE id = :id")
-  fun delete(id: Int)
+  @Query("SELECT * FROM carts WHERE id = :id")
+  suspend fun getById(id: String): Cart
+
+  @Delete
+  fun delete(cart: Cart)
 }

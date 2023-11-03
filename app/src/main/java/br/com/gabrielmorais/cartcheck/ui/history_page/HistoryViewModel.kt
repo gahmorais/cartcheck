@@ -18,7 +18,7 @@ class HistoryViewModel(private val cartRepository: CartRepository) : ViewModel()
 
   private val _carts = MutableStateFlow<List<Cart>>(listOf())
   val carts = _carts.asStateFlow()
-  private suspend fun getAll() = try {
+  private fun getAll() = try {
     _carts.value = cartRepository.getAll()
   } catch (e: Exception) {
     e.printStackTrace()

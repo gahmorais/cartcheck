@@ -25,7 +25,6 @@ import androidx.compose.material.rememberDismissState
 import androidx.compose.material3.Card
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -48,13 +47,13 @@ import br.com.gabrielmorais.cartcheck.utils.toBrazilianCurrency
 @Composable
 fun ProductList(
   modifier: Modifier = Modifier,
-  products: State<List<Product>>,
+  products: List<Product>,
   balance: Double = 0.0,
   deleteItem: (p: Product) -> Unit = {},
   onClick: () -> Unit = {}
 ) {
   CartCheckTheme {
-    val result = balance - products.value.sum()
+    val result = balance - products.sum()
     LazyColumn(modifier = Modifier.fillMaxSize()) {
       stickyHeader {
         HeaderList(
@@ -67,8 +66,8 @@ fun ProductList(
       }
 
       itemsIndexed(
-        items = products.value,
-        key = { _, p -> p.hashCode() }
+        items = products,
+        key = { i, p -> p.id }
       ) { index, product ->
         val dismissState = rememberDismissState(
           confirmStateChange = {
@@ -114,13 +113,12 @@ fun ProductList(
             product = product
           )
         }
-
       }
 
       item {
         FooterList(
           title = "Subtotal",
-          value = products.value.sum().toBrazilianCurrency()
+          value = products.sum().toBrazilianCurrency()
         )
       }
     }

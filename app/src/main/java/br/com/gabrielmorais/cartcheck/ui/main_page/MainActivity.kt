@@ -31,6 +31,7 @@ import br.com.gabrielmorais.cartcheck.ui.history_page.HistoryActivity
 import br.com.gabrielmorais.cartcheck.ui.theme.CartCheckTheme
 
 class MainActivity : ComponentActivity() {
+
   @OptIn(ExperimentalMaterial3Api::class)
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)

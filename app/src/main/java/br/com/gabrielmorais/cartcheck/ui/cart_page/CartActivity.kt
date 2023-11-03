@@ -26,16 +26,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.lifecycleScope
 import br.com.gabrielmorais.cartcheck.R
-import br.com.gabrielmorais.cartcheck.data.models.Cart
 import br.com.gabrielmorais.cartcheck.data.models.Product
 import br.com.gabrielmorais.cartcheck.ui.components.AddItemDialog
 import br.com.gabrielmorais.cartcheck.ui.components.EditBalanceDialog
 import br.com.gabrielmorais.cartcheck.ui.theme.CartCheckTheme
-import br.com.gabrielmorais.cartcheck.utils.sum
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import java.time.LocalDate
 
 class CartActivity : ComponentActivity() {
   private val viewModel: CartViewModel by viewModel()
@@ -44,8 +41,7 @@ class CartActivity : ComponentActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContent {
-      val products = viewModel.products.collectAsState()
-      val balance = viewModel.balance.collectAsState()
+      val cart by viewModel.cart.collectAsState()
       var showAddItem by remember { mutableStateOf(false) }
       var showEditBalance by remember { mutableStateOf(false) }
       CartCheckTheme {
@@ -64,16 +60,9 @@ class CartActivity : ComponentActivity() {
               actions = {
                 TextButton(
                   onClick = {
-                    val cart = Cart(
-                      date = LocalDate.now().toEpochDay(),
-                      products = products.value,
-                      totalPrice = products.value.sum(),
-                      balance = balance.value
-                    )
                     lifecycleScope.launch(Dispatchers.IO) {
                       viewModel.apply {
-                        saveCart(cart)
-                        cleanCart()
+                        finishPurchase()
                       }
                     }
                   }) {
@@ -96,8 +85,8 @@ class CartActivity : ComponentActivity() {
         ) { paddingValues ->
           ProductList(
             modifier = Modifier.padding(paddingValues),
-            balance = balance.value,
-            products = products,
+            balance = cart.balance,
+            products = cart.products,
             onClick = {
               showEditBalance = true
             },
@@ -110,7 +99,11 @@ class CartActivity : ComponentActivity() {
         if (showAddItem) {
           AddItemDialog(
             onConfirm = { state ->
-              val product = Product(state.description, state.price, state.quantity)
+              val product = Product(
+                description = state.description,
+                price = state.price,
+                quantity = state.quantity
+              )
               viewModel.addItem(product = product)
               showAddItem = false
             },
@@ -130,5 +123,14 @@ class CartActivity : ComponentActivity() {
         }
       }
     }
+
   }
+
+  override fun onStop() {
+    super.onStop()
+    lifecycleScope.launch {
+      viewModel.saveCurrentCart()
+    }
+  }
+
 }

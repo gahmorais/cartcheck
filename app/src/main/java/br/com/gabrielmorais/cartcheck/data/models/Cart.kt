@@ -3,17 +3,22 @@ package br.com.gabrielmorais.cartcheck.data.models
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import java.time.LocalDate
+import java.util.UUID
 
 @Entity(tableName = "carts")
 data class Cart(
-  @PrimaryKey(autoGenerate = true)
-  val id: Int = 0,
+  @PrimaryKey
+  @ColumnInfo(name = "id")
+  var id: String = UUID.randomUUID().toString(),
   @ColumnInfo(name = "data_compra")
-  val date: Long,
+  var date: Long = LocalDate.now().toEpochDay(),
   @ColumnInfo(name = "lista_produtos")
-  val products: List<Product>,
+  var products: List<Product> = listOf(),
   @ColumnInfo(name = "preco_total")
-  val totalPrice: Double,
+  var totalPrice: Double = 0.0,
   @ColumnInfo(name = "saldo")
-  val balance: Double
+  var balance: Double = 0.0,
+  @ColumnInfo(name = "finalizado")
+  var isFinished: Boolean = false
 )
