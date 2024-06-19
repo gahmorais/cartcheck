@@ -8,12 +8,11 @@ import br.com.gabrielmorais.cartcheck.data.models.Product
 import br.com.gabrielmorais.cartcheck.data.repositories.CartRepository
 import br.com.gabrielmorais.cartcheck.utils.TempData
 import br.com.gabrielmorais.cartcheck.utils.sum
+import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
 
 class CartViewModel(
   private val cartRepository: CartRepository,
@@ -39,27 +38,17 @@ class CartViewModel(
     cleanCart()
   }
 
-  suspend fun saveCurrentCart() {
-    runBlocking {
-      tempData.setCurrentCart(cart.value.id)
-      saveCart()
-      Log.i("CartViewModel", "saveCurrentCart: ${cart.value}")
-    }
+  fun saveCurrentCart() {
+    tempData.setCurrentCart(cart.value)
+    Log.i("CartViewModel", "saveCurrentCart: ${cart.value}")
   }
 
   private suspend fun getCurrentCart() {
-    val currentCartId = tempData.getCurrentCart()
-    Log.i("CartViewModel", "getCurrentCart: $currentCartId")
-    if (currentCartId.isNotEmpty()) {
-      try {
-        withContext(Dispatchers.IO) {
-          val currentCart = cartRepository.getById(currentCartId)
-          _cart.emit(currentCart)
-          Log.i("CartViewModel", "getCurrentCartValue: ${cart.value}")
-        }
-      } catch (e: Exception) {
-        e.printStackTrace()
-      }
+    val currentCartJson = tempData.getCurrentCart()
+    Log.i("CartViewModel", "getCurrentCart: $currentCartJson")
+    if (currentCartJson.isNotEmpty()) {
+      val currentCart = Gson().fromJson(currentCartJson, Cart::class.java)
+      _cart.emit(currentCart)
     } else {
       val newCart = Cart()
       _cart.emit(newCart)
@@ -69,23 +58,19 @@ class CartViewModel(
   }
 
   fun addItem(product: Product) {
-    val list = _cart.value.products.toMutableList()
-    list.add(product)
-    _cart.value.products = list.toList()
-    _cart.value.totalPrice = list.sum()
+    _cart.value.apply {
+      products.add(product)
+      totalPrice = products.sum()
+    }
   }
 
   private fun cleanCart() {
     _cart.value = Cart()
-    tempData.setCurrentCart("")
+    tempData.setCurrentCart(_cart.value)
   }
 
   fun removeItem(product: Product) {
-
-    val list = _cart.value.products.toMutableList() //toMutableList()
-    list.remove(product)
-    _cart.value.products = list.toList()
-
+    _cart.value.products.remove(product)
   }
 
   fun setBalance(value: Double) {

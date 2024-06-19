@@ -1,23 +1,29 @@
 package br.com.gabrielmorais.cartcheck.ui.cart_page
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.DismissDirection
+import androidx.compose.material.DismissState
 import androidx.compose.material.DismissValue
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.FractionalThreshold
 import androidx.compose.material.Icon
+import androidx.compose.material.ProgressIndicatorDefaults
 import androidx.compose.material.SwipeToDismiss
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Delete
@@ -38,10 +44,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import br.com.gabrielmorais.cartcheck.R
 import br.com.gabrielmorais.cartcheck.data.models.Product
+import br.com.gabrielmorais.cartcheck.ui.cart_page.components.FooterList
+import br.com.gabrielmorais.cartcheck.ui.cart_page.components.ListHeader
+import br.com.gabrielmorais.cartcheck.ui.cart_page.components.ListRow
 import br.com.gabrielmorais.cartcheck.ui.theme.CartCheckTheme
 import br.com.gabrielmorais.cartcheck.utils.mockProductList
 import br.com.gabrielmorais.cartcheck.utils.sum
 import br.com.gabrielmorais.cartcheck.utils.toBrazilianCurrency
+import kotlin.random.Random
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterialApi::class)
 @Composable
@@ -54,9 +64,11 @@ fun ProductList(
 ) {
   CartCheckTheme {
     val result = balance - products.sum()
-    LazyColumn(modifier = Modifier.fillMaxSize()) {
+    LazyColumn(
+      modifier = Modifier.fillMaxSize()
+    ) {
       stickyHeader {
-        HeaderList(
+        ListHeader(
           modifier = modifier,
           title = stringResource(R.string.text_balance),
           value = result.toBrazilianCurrency(),
@@ -67,52 +79,35 @@ fun ProductList(
 
       itemsIndexed(
         items = products,
-        key = { i, p -> p.id }
+        key = { i: Int, p: Product -> p.hashCode() }
       ) { index, product ->
         val dismissState = rememberDismissState(
           confirmStateChange = {
             if (it == DismissValue.DismissedToStart) {
               deleteItem(product)
+              true
+            } else {
+              false
             }
-            true
           }
         )
-
         SwipeToDismiss(
           modifier = Modifier
             .padding(vertical = 1.dp)
             .animateItemPlacement(),
           state = dismissState,
-          background = {
-            val color = when (dismissState.dismissDirection) {
-              DismissDirection.StartToEnd -> Color.Transparent
-              DismissDirection.EndToStart -> Color.Red
-              null -> Color.Transparent
-            }
-            Box(
-              modifier = Modifier
-                .fillMaxSize()
-                .background(color = color),
-            ) {
-              Icon(
-                modifier = Modifier
-                  .align(Alignment.CenterEnd)
-                  .padding(end = 10.dp)
-                  .size(25.dp),
-                imageVector = Icons.Rounded.Delete,
-                contentDescription = null
-              )
-            }
-          },
+          background = { BackgroundSwipeToDismiss(state = dismissState) },
           directions = setOf(DismissDirection.EndToStart),
           dismissThresholds = { directions ->
             FractionalThreshold(0.66F)
-          }) {
-          ListRow(
-            index = index,
-            product = product
-          )
-        }
+          },
+          dismissContent = {
+            ListRow(
+              index = index,
+              product = product
+            )
+          }
+        )
       }
 
       item {
@@ -125,86 +120,27 @@ fun ProductList(
   }
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun ListRow(
-  index: Int,
-  product: Product
+fun BackgroundSwipeToDismiss(
+  state: DismissState
 ) {
-  Card(
-    Modifier
-      .fillMaxSize(),
-    shape = RectangleShape,
-  ) {
-    Row(
-      Modifier
-        .fillMaxWidth()
-        .background(if (index % 2 == 0) Color.Gray.copy(alpha = 0.2F) else Color.White)
-        .padding(5.dp),
-      horizontalArrangement = Arrangement.SpaceAround,
-    ) {
-      Text(
-        text = product.description,
-        fontSize = 25.sp
-      )
-      Text(
-        text = product.quantity.toString(),
-        fontSize = 25.sp,
-        textAlign = TextAlign.End
-      )
-      Text(
-        text = product.price.toBrazilianCurrency(),
-        fontSize = 25.sp,
-        textAlign = TextAlign.End
-      )
-    }
+  val color = when (state.dismissDirection) {
+    DismissDirection.EndToStart -> Color.Red
+    else -> Color.Transparent
   }
-}
-
-@Composable
-fun HeaderList(
-  modifier: Modifier = Modifier,
-  onClick: () -> Unit = {},
-  title: String,
-  value: String
-) {
-  Row(
-    modifier
-      .fillMaxWidth()
-      .clickable(
-        enabled = true,
-        onClick = { onClick() }),
-    verticalAlignment = Alignment.Bottom,
-    horizontalArrangement = Arrangement.SpaceAround,
+  Box(
+    modifier = Modifier
+      .fillMaxSize()
+      .background(color = color),
   ) {
-    Text(
-      text = title,
-      style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 25.sp)
-    )
-    Text(
-      text = value,
-      style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 30.sp)
-    )
-  }
-}
-
-@Composable
-fun FooterList(
-  modifier: Modifier = Modifier,
-  title: String,
-  value: String
-) {
-  Row(
-    modifier.fillMaxWidth(),
-    verticalAlignment = Alignment.Bottom,
-    horizontalArrangement = Arrangement.SpaceAround
-  ) {
-    Text(
-      text = title,
-      style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 25.sp)
-    )
-    Text(
-      text = value,
-      style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 30.sp)
+    Icon(
+      modifier = Modifier
+        .align(Alignment.CenterEnd)
+        .padding(end = 10.dp)
+        .size(25.dp),
+      imageVector = Icons.Rounded.Delete,
+      contentDescription = null
     )
   }
 }

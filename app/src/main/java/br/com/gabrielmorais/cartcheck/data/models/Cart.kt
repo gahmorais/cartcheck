@@ -14,7 +14,7 @@ data class Cart(
   @ColumnInfo(name = "data_compra")
   var date: Long = LocalDate.now().toEpochDay(),
   @ColumnInfo(name = "lista_produtos")
-  var products: List<Product> = listOf(),
+  var products: MutableList<Product> = mutableListOf(),
   @ColumnInfo(name = "preco_total")
   var totalPrice: Double = 0.0,
   @ColumnInfo(name = "saldo")

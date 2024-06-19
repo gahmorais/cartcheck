@@ -98,15 +98,15 @@ dependencies {
     annotationProcessor("androidx.room:room-compiler:$roomVersion")
     implementation("androidx.room:room-ktx:$roomVersion")
     kapt("androidx.room:room-compiler:$roomVersion")
+
     def koin_version = "3.4.3"
     implementation "io.insert-koin:koin-android:$koin_version"
-
+    implementation "io.insert-koin:koin-androidx-compose:$koin_version"
 
     def datastore_version = "1.0.0"
     def protobuf_version = "3.19.4"
     implementation("androidx.datastore:datastore:$datastore_version")
     implementation "com.google.protobuf:protobuf-javalite:$protobuf_version"
-
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
