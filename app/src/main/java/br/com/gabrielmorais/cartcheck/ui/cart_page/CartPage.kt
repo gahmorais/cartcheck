@@ -14,7 +14,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -23,17 +23,24 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
 import br.com.gabrielmorais.cartcheck.R
-import br.com.gabrielmorais.cartcheck.data.models.Product
-import br.com.gabrielmorais.cartcheck.ui.components.AddItemDialog
-import br.com.gabrielmorais.cartcheck.ui.components.EditBalanceDialog
+import br.com.gabrielmorais.cartcheck.di.mainModule
+import br.com.gabrielmorais.cartcheck.di.viewModelModule
+import br.com.gabrielmorais.cartcheck.ui.cart_page.components.AddItemDialog
+import br.com.gabrielmorais.cartcheck.ui.cart_page.components.AddItemDialogState
+import br.com.gabrielmorais.cartcheck.ui.cart_page.components.EditBalanceDialog
 import br.com.gabrielmorais.cartcheck.ui.theme.CartCheckTheme
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
+import org.koin.compose.KoinApplication
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -41,10 +48,35 @@ fun CartPage(viewModel: CartViewModel = koinViewModel()) {
   val cart by viewModel.cart.collectAsState()
   var showAddItem by remember { mutableStateOf(false) }
   var showEditBalance by remember { mutableStateOf(false) }
+  var addItemDialogState = AddItemDialogState()
   val context = LocalContext.current
+  val lifecycleOwner = LocalLifecycleOwner.current
+  val scope = rememberCoroutineScope()
+  DisposableEffect(key1 = lifecycleOwner) {
+    val observer = LifecycleEventObserver { _, event ->
+      if (event == Lifecycle.Event.ON_STOP) {
+        viewModel.saveCartState()
+      }
+    }
+    lifecycleOwner.lifecycle.addObserver(observer)
+    onDispose {
+      lifecycleOwner.lifecycle.removeObserver(observer)
+    }
+  }
+
+  LaunchedEffect(key1 = "init") {
+    viewModel.loadCurrentCart()
+  }
+
   CartCheckTheme {
     Scaffold(
-      topBar = { AppBar() },
+      topBar = {
+        AppBar {
+          scope.launch(Dispatchers.IO) {
+            viewModel.finishPurchase()
+          }
+        }
+      },
       floatingActionButton = {
         FloatingActionButton(onClick = { showAddItem = true }) {
           Icon(imageVector = Icons.Default.Add, contentDescription = null)
@@ -55,8 +87,12 @@ fun CartPage(viewModel: CartViewModel = koinViewModel()) {
         modifier = Modifier.padding(paddingValues),
         balance = cart.balance,
         products = cart.products,
-        onClick = {
+        onEditBalance = {
           showEditBalance = true
+        },
+        onEditProduct = { product ->
+          showAddItem = true
+          addItemDialogState = AddItemDialogState(product)
         },
         deleteItem = { product ->
           viewModel.removeItem(product)
@@ -67,17 +103,26 @@ fun CartPage(viewModel: CartViewModel = koinViewModel()) {
     }
     if (showAddItem) {
       AddItemDialog(
+        uiState = addItemDialogState,
         onConfirm = { state ->
-          val product = Product(
-            description = state.description,
-            price = state.price,
-            quantity = state.quantity
-          )
-          viewModel.addItem(product = product)
+          val newProduct = state.toProduct()
+          val oldProduct = state.getProduct()
+          if (oldProduct != null) {
+            val updatedProduct = oldProduct.copy(
+              description = state.description,
+              price = state.price.toDouble(),
+              quantity = state.quantity.toInt()
+            )
+            viewModel.updateItem(updatedProduct)
+          } else {
+            viewModel.addItem(product = newProduct)
+          }
           showAddItem = false
+          addItemDialogState = AddItemDialogState()
         },
         onDismiss = {
           showAddItem = false
+          addItemDialogState = AddItemDialogState()
         }
       )
     }
@@ -91,13 +136,14 @@ fun CartPage(viewModel: CartViewModel = koinViewModel()) {
       )
     }
   }
+
 }
+
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
-private fun AppBar(viewModel: CartViewModel = koinViewModel()) {
+private fun AppBar(onClick: () -> Unit = {}) {
   val context = LocalContext.current
-  val scope = rememberCoroutineScope()
   TopAppBar(title = {
     Text(
       text = context.getString(R.string.text_new_sale),
@@ -110,13 +156,8 @@ private fun AppBar(viewModel: CartViewModel = koinViewModel()) {
   },
     actions = {
       TextButton(
-        onClick = {
-          scope.launch(Dispatchers.IO) {
-            viewModel.apply {
-              finishPurchase()
-            }
-          }
-        }) {
+        onClick = onClick
+      ) {
         Text(
           text = "Salvar",
           style = TextStyle(
@@ -127,4 +168,15 @@ private fun AppBar(viewModel: CartViewModel = koinViewModel()) {
         )
       }
     })
+}
+
+
+@Composable
+@Preview(showBackground = true)
+fun CartPagePreview() {
+  KoinApplication(application = {
+    modules(viewModelModule, mainModule)
+  }) {
+    CartPage()
+  }
 }

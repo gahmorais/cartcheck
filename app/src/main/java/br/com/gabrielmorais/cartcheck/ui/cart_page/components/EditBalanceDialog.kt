@@ -1,4 +1,4 @@
-package br.com.gabrielmorais.cartcheck.ui.components
+package br.com.gabrielmorais.cartcheck.ui.cart_page.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement

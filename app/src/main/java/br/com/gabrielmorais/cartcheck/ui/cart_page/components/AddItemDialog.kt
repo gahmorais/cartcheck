@@ -1,17 +1,21 @@
-package br.com.gabrielmorais.cartcheck.ui.components
+package br.com.gabrielmorais.cartcheck.ui.cart_page.components
 
+import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -32,17 +36,20 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import br.com.gabrielmorais.cartcheck.R
+import br.com.gabrielmorais.cartcheck.data.models.Product
+import br.com.gabrielmorais.cartcheck.ui.theme.CartCheckTheme
 
-class AddItemDialogState() {
-  var price by mutableStateOf(1.0)
-    private set
-  var description by mutableStateOf("")
-    private set
-
-  var quantity by mutableStateOf(1)
+class AddItemDialogState(private val product: Product? = null) {
+  var price by mutableStateOf(product?.price?.toString() ?: "")
     private set
 
-  val onPriceChange: (Double) -> Unit = {
+  var description by mutableStateOf(product?.description ?: "")
+    private set
+
+  var quantity by mutableStateOf(product?.quantity?.toString() ?: "")
+    private set
+
+  val onPriceChange: (String) -> Unit = {
     price = it
   }
 
@@ -50,9 +57,17 @@ class AddItemDialogState() {
     description = it
   }
 
-  val onQuantityChange: (Int) -> Unit = {
+  val onQuantityChange: (String) -> Unit = {
     quantity = it
   }
+
+  fun getProduct(): Product? = product
+
+  fun toProduct() = Product(
+    description = description,
+    price = price.toDouble(),
+    quantity = quantity.toInt()
+  )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -91,48 +106,60 @@ fun AddItemDialog(
       TextField(
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
         label = { Text(text = stringResource(R.string.text_quantity)) },
-        value = uiState.quantity.toString(), onValueChange = {
-          try {
-            uiState.onQuantityChange(it.toInt())
-          } catch (e: Exception) {
-
-          }
-        })
+        value = uiState.quantity, onValueChange = {
+          uiState.onQuantityChange(it)
+        },
+        isError = uiState.quantity.isNotEmpty() && !isValidInt(uiState.quantity)
+      )
       TextField(
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
         label = { Text(text = stringResource(R.string.text_price)) },
-        value = uiState.price.toString(), onValueChange = {
-          try {
-            uiState.onPriceChange(it.toDouble())
-          } catch (e: Exception) {
-
-          }
-        }
+        value = uiState.price, onValueChange = {
+          uiState.onPriceChange(it.replace(",", "."))
+        },
+        isError = uiState.price.isNotEmpty() && !isValidDouble(uiState.quantity)
       )
       Row {
-        TextButton(
-          modifier = Modifier.fillMaxWidth(0.5F),
+        OutlinedButton(
+          modifier = Modifier.fillMaxWidth(0.4F),
+          shape = RoundedCornerShape(8.dp),
+          onClick = { onDismiss() }) {
+          Text(text = stringResource(R.string.text_cancel))
+        }
+        Spacer(modifier = Modifier.size(8.dp))
+        OutlinedButton(
+          modifier = Modifier.fillMaxWidth(),
+          shape = RoundedCornerShape(8.dp),
           onClick = {
             onConfirm(uiState)
           }) {
           Text(text = stringResource(R.string.text_add_item))
-        }
-        TextButton(
-          modifier = Modifier.fillMaxWidth(),
-          onClick = { onDismiss() }) {
-          Text(text = stringResource(R.string.text_cancel))
         }
       }
       LaunchedEffect(Unit) {
         focusRequester.requestFocus()
       }
     }
+
   }
 }
 
+private fun isValidInt(value: String): Boolean {
+  return value.toIntOrNull() != null
+}
 
-@Preview(showBackground = true, backgroundColor = 555333)
+private fun isValidDouble(value: String): Boolean {
+  return value.toDoubleOrNull() != null
+}
+
+
+@Preview
+@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 fun AddItemDialogPreview() {
-  AddItemDialog()
+  CartCheckTheme {
+    Surface {
+      AddItemDialog()
+    }
+  }
 }
