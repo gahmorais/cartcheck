@@ -1,8 +1,8 @@
 package br.com.gabrielmorais.cartcheck.di
 
-import br.com.gabrielmorais.cartcheck.ui.cart_page.CartViewModel
-import br.com.gabrielmorais.cartcheck.ui.history_page.HistoryViewModel
-import br.com.gabrielmorais.cartcheck.ui.main_page.MainViewModel
+import br.com.gabrielmorais.cartcheck.ui.cart.CartViewModel
+import br.com.gabrielmorais.cartcheck.ui.history.HistoryViewModel
+import br.com.gabrielmorais.cartcheck.ui.main.MainViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 

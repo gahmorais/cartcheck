@@ -5,12 +5,17 @@
     <string name="text_price">Preço</string>
     <string name="text_quantity">Quantidade</string>
     <string name="text_product_description">Descrição do produto</string>
-    <string name="text_add_item">Adicionar Item</string>
-    <string name="text_new_sale">Nova compra</string>
+    <string name="text_add_product">Adicionar Produto</string>
+    <string name="text_new_sale">Carrinho</string>
     <string name="text_change_balance">Alterar saldo</string>
     <string name="text_update">Atualizar</string>
     <string name="text_balance">Saldo</string>
     <string name="text_history">Histórico</string>
     <string name="text_back">Voltar</string>
     <string name="text_total">Total</string>
+    <string name="empty_cart_message">Parece que o seu carrinho está vazio.</string>
+    <string name="text_subtotal">Subtotal</string>
+    <string name="text_invalid_value">Valor inválido</string>
+    <string name="text_add">Adicionar</string>
+    <string name="text_save">Salvar</string>
 </resources>

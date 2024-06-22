@@ -19,4 +19,12 @@ fun formatDate(long: Long): String {
   return date.format(pattern)
 }
 
+fun isValidInt(value: String): Boolean {
+  return value.toIntOrNull() != null
+}
+
+fun isValidDouble(value: String): Boolean {
+  return value.toDoubleOrNull() != null
+}
+
 fun List<Product>.sum() = fold(0.0) { acc, product -> acc + (product.price * product.quantity) }
