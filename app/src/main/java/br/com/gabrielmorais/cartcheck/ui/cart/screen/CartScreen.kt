@@ -1,6 +1,5 @@
 package br.com.gabrielmorais.cartcheck.ui.cart.screen
 
-import android.widget.Toast
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -25,10 +24,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import br.com.gabrielmorais.cartcheck.R
@@ -40,6 +37,7 @@ import br.com.gabrielmorais.cartcheck.ui.cart.components.AddItemDialogState
 import br.com.gabrielmorais.cartcheck.ui.cart.components.EditBalanceDialog
 import br.com.gabrielmorais.cartcheck.ui.theme.CartCheckTheme
 import br.com.gabrielmorais.cartcheck.utils.sum
+import br.com.gabrielmorais.cartcheck.utils.toast
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
@@ -56,6 +54,7 @@ fun CartPage(viewModel: CartViewModel = koinViewModel()) {
   val scope = rememberCoroutineScope()
   val context = LocalContext.current
   val message by viewModel.message.collectAsState(initial = "")
+
   DisposableEffect(key1 = lifecycleOwner) {
     val observer = LifecycleEventObserver { _, event ->
       if (event == Lifecycle.Event.ON_STOP) {
@@ -71,7 +70,7 @@ fun CartPage(viewModel: CartViewModel = koinViewModel()) {
 
   LaunchedEffect(key1 = message) {
     if (message.isNotEmpty()) {
-      Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+      context.toast(message)
     }
   }
 

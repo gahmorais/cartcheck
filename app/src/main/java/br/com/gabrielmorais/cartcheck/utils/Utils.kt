@@ -1,5 +1,7 @@
 package br.com.gabrielmorais.cartcheck.utils
 
+import android.content.Context
+import android.widget.Toast
 import br.com.gabrielmorais.cartcheck.data.models.Product
 import java.text.NumberFormat
 import java.time.LocalDate
@@ -25,6 +27,10 @@ fun isValidInt(value: String): Boolean {
 
 fun isValidDouble(value: String): Boolean {
   return value.toDoubleOrNull() != null
+}
+
+fun Context.toast(message: String) {
+  Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
 }
 
 fun List<Product>.sum() = fold(0.0) { acc, product -> acc + (product.price * product.quantity) }

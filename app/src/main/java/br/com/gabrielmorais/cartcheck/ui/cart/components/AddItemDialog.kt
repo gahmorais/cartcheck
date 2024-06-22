@@ -28,14 +28,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import br.com.gabrielmorais.cartcheck.R
 import br.com.gabrielmorais.cartcheck.data.models.Product
 import br.com.gabrielmorais.cartcheck.ui.theme.CartCheckTheme
@@ -80,7 +79,13 @@ fun AddItemDialog(
   onConfirm: (AddItemDialogState) -> Unit = {},
   onDismiss: () -> Unit = {}
 ) {
-  Dialog(onDismissRequest = { onDismiss() }) {
+  Dialog(
+    onDismissRequest = { onDismiss() },
+    properties = DialogProperties(
+      dismissOnBackPress = true,
+      dismissOnClickOutside = true
+    )
+  ) {
     val focusRequester = remember {
       FocusRequester()
     }
