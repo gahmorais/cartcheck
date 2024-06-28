@@ -12,6 +12,7 @@ import br.com.gabrielmorais.cartcheck.ui.history.components.CartDetails
 import br.com.gabrielmorais.cartcheck.ui.history.components.CartList
 import br.com.gabrielmorais.cartcheck.ui.theme.CartCheckTheme
 import org.koin.androidx.compose.koinViewModel
+import timber.log.Timber
 
 @Composable
 fun HistoryPage(
@@ -23,6 +24,7 @@ fun HistoryPage(
       mutableStateOf<Cart?>(null)
     }
     val carts = viewModel.carts.collectAsState().value
+    Timber.d("Carrinhos $carts")
     selectCart?.let {
       CartDetails(
         cart = it,

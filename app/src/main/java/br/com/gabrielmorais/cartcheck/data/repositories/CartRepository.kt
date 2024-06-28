@@ -20,7 +20,7 @@ class CartRepository(private val cartDao: CartDao) {
   }
 
 
-  fun getAll(): List<Cart> = try {
+  suspend fun getAll(): List<Cart> = try {
     cartDao.getAllCarts()
   } catch (e: Exception) {
     throw e

@@ -11,14 +11,12 @@ data class Cart(
   @PrimaryKey
   @ColumnInfo(name = "id")
   var id: String = UUID.randomUUID().toString(),
-  @ColumnInfo(name = "data_compra")
-  var date: Long = LocalDate.now().toEpochDay(),
   @ColumnInfo(name = "lista_produtos")
   var products: List<Product> = listOf(),
+  @ColumnInfo(name = "data_compra")
+  var date: Long = LocalDate.now().toEpochDay(),
   @ColumnInfo(name = "preco_total")
   var totalPrice: Double = 0.0,
   @ColumnInfo(name = "saldo")
   var balance: Double = 0.0,
-  @ColumnInfo(name = "finalizado")
-  var isFinished: Boolean = false
 )

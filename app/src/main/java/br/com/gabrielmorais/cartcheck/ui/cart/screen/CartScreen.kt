@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -42,6 +43,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.KoinApplication
+import timber.log.Timber
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -57,8 +59,19 @@ fun CartPage(viewModel: CartViewModel = koinViewModel()) {
 
   DisposableEffect(key1 = lifecycleOwner) {
     val observer = LifecycleEventObserver { _, event ->
-      if (event == Lifecycle.Event.ON_STOP) {
-        viewModel.saveCartState()
+      when (event) {
+        Lifecycle.Event.ON_STOP -> {
+          Timber.d("Encerrando APP")
+          viewModel.saveCartState()
+        }
+
+        Lifecycle.Event.ON_RESUME -> {
+          if (cart.balance == 0.0) {
+            showEditBalance = true
+          }
+        }
+
+        else -> {}
       }
     }
     lifecycleOwner.lifecycle.addObserver(observer)
@@ -78,6 +91,16 @@ fun CartPage(viewModel: CartViewModel = koinViewModel()) {
     viewModel.loadCurrentCart()
   }
 
+  var isFirstRender by remember {
+    mutableStateOf(true)
+  }
+  LaunchedEffect(cart) {
+    if (isFirstRender && cart.balance == 0.0) {
+      showEditBalance = true
+      isFirstRender = false // Garantir que isso só ocorra na primeira renderização
+    }
+  }
+
   CartCheckTheme {
     Scaffold(
       topBar = {
@@ -88,7 +111,7 @@ fun CartPage(viewModel: CartViewModel = koinViewModel()) {
         }
       },
       floatingActionButton = {
-        SmallFloatingActionButton(onClick = { showAddItem = true }) {
+        FloatingActionButton(onClick = { showAddItem = true }) {
           Icon(imageVector = Icons.Default.Add, contentDescription = null)
         }
       }
@@ -146,7 +169,7 @@ fun CartPage(viewModel: CartViewModel = koinViewModel()) {
         )
       }
 
-      if (showEditBalance || cart.balance == 0.0) {
+      if (showEditBalance) {
         EditBalanceDialog(
           onConfirm = {
             viewModel.setBalance(it)

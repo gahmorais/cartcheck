@@ -20,7 +20,7 @@ class CartViewModel(
   private val cartRepository: CartRepository,
   private val tempData: TempData
 ) : ViewModel() {
-  private val _cart = MutableStateFlow(Cart())
+  private val _cart = MutableStateFlow(loadCurrentCart())
   val cart = _cart.asStateFlow()
 
   private val _message = MutableSharedFlow<String>()
@@ -54,22 +54,18 @@ class CartViewModel(
   }
 
   fun saveCartState() {
-    val products = _cart.value.products
-    if (products.isNotEmpty()) {
-      tempData.setCurrentCart(cart.value)
-      Timber.i("saveCurrentCart: ${cart.value}")
-    }
+    tempData.setCurrentCart(cart.value)
+    Timber.i("saveCurrentCart: ${cart.value}")
   }
 
-  fun loadCurrentCart() {
+  fun loadCurrentCart(): Cart {
     val currentCartJson = tempData.getCurrentCart()
     Timber.d("getCurrentCart: $currentCartJson")
-    val cart = if (currentCartJson.isNotEmpty()) {
+    return if (currentCartJson.isNotEmpty()) {
       Gson().fromJson(currentCartJson, Cart::class.java)
     } else {
       Cart()
     }
-    _cart.update { cart }
   }
 
   fun addItem(product: Product) {
@@ -87,7 +83,7 @@ class CartViewModel(
     Timber.d("Item atualizado: $product")
     products[index] = product
     Timber.d("Nova lista $products")
-    _cart.update { it.copy(products = products.toList()) }
+    _cart.update { it.copy(products = products) }
   }
 
   private fun cleanCart() {

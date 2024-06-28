@@ -13,10 +13,7 @@ interface CartDao {
   suspend fun insert(cart: Cart)
 
   @Query("SELECT * FROM carts")
-  fun getAllCarts(): List<Cart>
-
-  @Query("SELECT finalizado FROM carts WHERE id = :id")
-  fun isFinished(id: String): Boolean
+  suspend fun getAllCarts(): List<Cart>
 
   @Query("SELECT * FROM carts WHERE id = :id")
   suspend fun getById(id: String): Cart
