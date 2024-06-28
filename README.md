@@ -35,14 +35,14 @@ ___
 **Capturas de tela**
 
 <p>
-<img src="images/cartcheck001.png" alt="printscreen_cartcheck001"/>
-<img src="images/cartcheck002.png" alt="printscreen_cartcheck002"/>
+<img src="images/cartcheck001.png" alt="printscreen_cartcheck001" width="300"/>
+<img src="images/cartcheck002.png" alt="printscreen_cartcheck002" width="300"/>
 </p>
 <p>
-<img src="images/cartcheck003.png" alt="printscreen_cartcheck003"/>
-<img src="images/cartcheck004.png" alt="printscreen_cartcheck004"/>
+<img src="images/cartcheck003.png" alt="printscreen_cartcheck003" width="300"/>
+<img src="images/cartcheck004.png" alt="printscreen_cartcheck004" width="300"/>
 </p>
 <p>
-<img src="images/cartcheck005.png" alt="printscreen_cartcheck005"/>
-<img src="images/cartcheck006.png" alt="printscreen_cartcheck006"/>
+<img src="images/cartcheck005.png" alt="printscreen_cartcheck005" width="300"/>
+<img src="images/cartcheck006.png" alt="printscreen_cartcheck006" width="300"/>
 </p>
