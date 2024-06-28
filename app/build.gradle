@@ -14,7 +14,7 @@ android {
         minSdk 28
         targetSdk 34
         versionCode 1
-        versionName "1.0"
+        versionName "1.0.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -99,10 +99,6 @@ dependencies {
 
     implementation "io.insert-koin:koin-android:$koin_version"
     implementation "io.insert-koin:koin-androidx-compose:$koin_version"
-
-    implementation("androidx.datastore:datastore-preferences:$datastore_version")
-    implementation("androidx.datastore:datastore:$datastore_version")
-    implementation "com.google.protobuf:protobuf-javalite:$protobuf_version"
 
     implementation "com.jakewharton.timber:timber:$timber_version"
 
