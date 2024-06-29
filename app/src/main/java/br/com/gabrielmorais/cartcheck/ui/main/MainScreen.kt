@@ -5,7 +5,6 @@ import android.content.Intent
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -33,6 +32,7 @@ import br.com.gabrielmorais.cartcheck.di.mainModule
 import br.com.gabrielmorais.cartcheck.di.viewModelModule
 import br.com.gabrielmorais.cartcheck.ui.cart.CartActivity
 import br.com.gabrielmorais.cartcheck.ui.history.HistoryActivity
+import br.com.gabrielmorais.cartcheck.ui.shopping_list.ShoppingListActivity
 import br.com.gabrielmorais.cartcheck.ui.theme.CartCheckTheme
 import org.koin.compose.KoinApplication
 
@@ -51,20 +51,25 @@ fun MainScreen(
         .fillMaxSize()
         .padding(contentPadding)
         .padding(32.dp),
-      verticalArrangement = Arrangement.Center,
+      verticalArrangement = Arrangement.spacedBy(32.dp, alignment = Alignment.CenterVertically),
       horizontalAlignment = Alignment.CenterHorizontally
     ) {
       RectangleButton(title = stringResource(R.string.text_new_shop)) {
-        val intent = Intent(context, CartActivity::class.java)
-        context.startActivity(intent)
+        context.openActivity(CartActivity::class.java)
       }
-      Spacer(modifier = Modifier.padding(16.dp))
       RectangleButton(title = stringResource(R.string.text_shopping_history)) {
-        val intent = Intent(context, HistoryActivity::class.java)
-        context.startActivity(intent)
+        context.openActivity(HistoryActivity::class.java)
+      }
+      RectangleButton(title = stringResource(R.string.text_shopping_list)) {
+        context.openActivity(ShoppingListActivity::class.java)
       }
     }
   }
+}
+
+private fun <T> Context.openActivity(activity: Class<T>) {
+  val intent = Intent(this, activity)
+  startActivity(intent)
 }
 
 @Composable

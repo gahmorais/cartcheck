@@ -21,7 +21,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import br.com.gabrielmorais.cartcheck.data.models.Product
 import br.com.gabrielmorais.cartcheck.ui.theme.CartCheckTheme
 import br.com.gabrielmorais.cartcheck.utils.mockProductList
@@ -54,20 +53,26 @@ fun ListRow(
           text = product.description,
           maxLines = 1,
           overflow = TextOverflow.Ellipsis,
-          fontSize = 25.sp
+          style = MaterialTheme
+            .typography
+            .headlineSmall
         )
 
         Text(
           modifier = Modifier.fillMaxWidth(),
           text = product.price.toBrazilianCurrency(),
-          fontSize = 25.sp,
-          textAlign = TextAlign.Start
+          style = MaterialTheme
+            .typography
+            .headlineSmall
+            .copy(textAlign = TextAlign.Start),
         )
       }
       Text(
-        textAlign = TextAlign.Center,
         text = product.quantity.toString(),
-        fontSize = 30.sp,
+        style = MaterialTheme
+          .typography
+          .headlineSmall
+          .copy(textAlign = TextAlign.Center),
       )
     }
   }
@@ -79,13 +84,7 @@ fun ListRow(
 fun ListRowPreview() {
   CartCheckTheme {
     Surface {
-      ListRow(
-        index = 2, product = mockProductList[0]
-          .copy(
-            description = "Queijo Mussarela",
-            quantity = 999
-          )
-      )
+      ListRow(index = 2, product = mockProductList[0])
     }
   }
 }

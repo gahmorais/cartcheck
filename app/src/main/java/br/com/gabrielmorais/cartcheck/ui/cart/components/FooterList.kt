@@ -3,7 +3,6 @@ package br.com.gabrielmorais.cartcheck.ui.cart.components
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -12,7 +11,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import br.com.gabrielmorais.cartcheck.ui.theme.CartCheckTheme
 
 
@@ -23,9 +21,9 @@ fun FooterList(
   value: String
 ) {
   Row(
-    modifier.fillMaxWidth().padding(horizontal = 32.dp),
+    modifier.fillMaxWidth(),
     verticalAlignment = Alignment.Bottom,
-    horizontalArrangement = Arrangement.spacedBy(32.dp)
+    horizontalArrangement = Arrangement.SpaceAround
   ) {
     Text(
       text = title,

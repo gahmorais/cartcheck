@@ -20,4 +20,6 @@
     <string name="text_save">Salvar</string>
     <string name="text_shopping_history">Histórico de compras</string>
     <string name="text_new_shop">Nova Compra</string>
+    <string name="text_shopping_list">Lista de compras</string>
+    <string name="text_start_buy">Iniciar compra</string>
 </resources>

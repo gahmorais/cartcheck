@@ -25,6 +25,7 @@
         </activity>
         <activity android:name=".ui.cart.CartActivity" />
         <activity android:name=".ui.history.HistoryActivity" />
+        <activity android:name=".ui.shopping_list.ShoppingListActivity"/>
     </application>
 
 </manifest>

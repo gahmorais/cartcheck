@@ -1,5 +1,6 @@
 package br.com.gabrielmorais.cartcheck.ui.cart.screen
 
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -8,7 +9,6 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SmallFloatingActionButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
@@ -27,6 +27,7 @@ import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import br.com.gabrielmorais.cartcheck.R
@@ -97,7 +98,7 @@ fun CartPage(viewModel: CartViewModel = koinViewModel()) {
   LaunchedEffect(cart) {
     if (isFirstRender && cart.balance == 0.0) {
       showEditBalance = true
-      isFirstRender = false // Garantir que isso só ocorra na primeira renderização
+      isFirstRender = false
     }
   }
 
@@ -111,10 +112,12 @@ fun CartPage(viewModel: CartViewModel = koinViewModel()) {
         }
       },
       floatingActionButton = {
-        FloatingActionButton(onClick = { showAddItem = true }) {
+        FloatingActionButton(
+          modifier = Modifier.offset(y = (-30).dp),
+          onClick = { showAddItem = true }) {
           Icon(imageVector = Icons.Default.Add, contentDescription = null)
         }
-      }
+      },
     ) { paddingValues ->
       if (cart.products.isEmpty()) {
         EmptyCartPage(
